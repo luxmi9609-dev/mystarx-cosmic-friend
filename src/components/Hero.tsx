@@ -45,11 +45,11 @@ const Hero = () => {
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <Button variant="cosmic" size="lg" className="text-lg px-8 py-4">
+          <Button variant="cosmic" size="lg" className="text-lg px-8 py-4" onClick={() => window.location.href = '/auth'}>
             <Stars className="mr-2" />
             See My Stars
           </Button>
-          <Button variant="mystical" size="lg" className="text-lg px-8 py-4">
+          <Button variant="mystical" size="lg" className="text-lg px-8 py-4" onClick={() => window.location.href = '/auth'}>
             <Moon className="mr-2" />
             Start My Reading
           </Button>

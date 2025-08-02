@@ -63,13 +63,13 @@ const CallToAction = () => {
 
             {/* Call to Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Button variant="cosmic" size="lg" className="text-xl px-12 py-6 group">
+              <Button variant="cosmic" size="lg" className="text-xl px-12 py-6 group" onClick={() => window.location.href = '/auth'}>
                 <Stars className="mr-3 group-hover:animate-twinkle" />
                 See My Stars
                 <ArrowRight className="ml-3 group-hover:translate-x-1 transition-transform" />
               </Button>
               
-              <Button variant="mystical" size="lg" className="text-xl px-12 py-6">
+              <Button variant="mystical" size="lg" className="text-xl px-12 py-6" onClick={() => window.location.href = '/auth'}>
                 <Moon className="mr-3" />
                 Start Free Reading
               </Button>
