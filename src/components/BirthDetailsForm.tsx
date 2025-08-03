@@ -35,7 +35,7 @@ ${formData.question ? `Question: ${formData.question}` : ''}
 Please provide my personalized reading!`;
 
     // WhatsApp business number - replace with actual number
-    const phoneNumber = "+918954034374";
+        const phoneNumber = "+918954034374";
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
     
     window.open(whatsappUrl, '_blank');
