@@ -130,7 +130,7 @@ Please provide my personalized reading!`;
 
           <Button type="submit" variant="cosmic" size="lg" className="w-full">
             <Send className="mr-2 w-4 h-4" />
-            Submit and Send via WhatsApp
+            Submit
           </Button>
         </form>
       </DialogContent>
