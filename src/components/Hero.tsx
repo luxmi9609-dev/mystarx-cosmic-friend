@@ -1,9 +1,15 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Sparkles, Stars, Moon } from "lucide-react";
 import cosmicHero from "@/assets/cosmic-hero.jpg";
+import BirthDetailsForm from "./BirthDetailsForm";
 
 const Hero = () => {
+  const [isFormOpen, setIsFormOpen] = useState(false);
+
   return (
+    <>
+      <BirthDetailsForm isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} />
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image */}
       <div 
@@ -30,28 +36,21 @@ const Hero = () => {
         </div>
         
         <h1 className="text-5xl md:text-7xl font-bold mb-6 cosmic-glow">
-          <span className="text-gradient">MyStarX</span>
+          <span className="text-gradient">Welcome to MyStarX</span>
         </h1>
         
         <p className="text-xl md:text-2xl mb-4 text-foreground/90 font-light">
-          Your cosmic best friend
+          Cosmic Friend
         </p>
         
         <p className="text-lg md:text-xl mb-8 text-muted-foreground max-w-2xl mx-auto">
-          Emotional, intelligent, and brutally honest astrology that combines 
-          <span className="text-secondary font-semibold"> Vedic</span>, 
-          <span className="text-accent font-semibold"> Western</span>, and 
-          <span className="text-primary font-semibold"> mystical</span> wisdom
+          Unlock your destiny through the stars ✨
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <Button variant="cosmic" size="lg" className="text-lg px-8 py-4" onClick={() => window.location.href = '/auth'}>
+        <div className="flex justify-center">
+          <Button variant="cosmic" size="lg" className="text-lg px-8 py-4" data-cosmic-button onClick={() => setIsFormOpen(true)}>
             <Stars className="mr-2" />
-            See My Stars
-          </Button>
-          <Button variant="mystical" size="lg" className="text-lg px-8 py-4" onClick={() => window.location.href = '/auth'}>
-            <Moon className="mr-2" />
-            Start My Reading
+            Get My Reading
           </Button>
         </div>
 
@@ -67,6 +66,7 @@ const Hero = () => {
         </div>
       </div>
     </section>
+    </>
   );
 };
 

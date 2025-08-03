@@ -62,16 +62,11 @@ const CallToAction = () => {
             </div>
 
             {/* Call to Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Button variant="cosmic" size="lg" className="text-xl px-12 py-6 group" onClick={() => window.location.href = '/auth'}>
+            <div className="flex justify-center">
+              <Button variant="cosmic" size="lg" className="text-xl px-12 py-6 group" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
                 <Stars className="mr-3 group-hover:animate-twinkle" />
-                See My Stars
+                Get My Reading
                 <ArrowRight className="ml-3 group-hover:translate-x-1 transition-transform" />
-              </Button>
-              
-              <Button variant="mystical" size="lg" className="text-xl px-12 py-6" onClick={() => window.location.href = '/auth'}>
-                <Moon className="mr-3" />
-                Start Free Reading
               </Button>
             </div>
 
