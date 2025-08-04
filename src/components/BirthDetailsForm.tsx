@@ -5,6 +5,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Calendar, Clock, MapPin, Send } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 interface BirthDetailsFormProps {
   isOpen: boolean;
@@ -19,27 +22,111 @@ const BirthDetailsForm = ({ isOpen, onClose }: BirthDetailsFormProps) => {
     placeOfBirth: "",
     question: ""
   });
+  const [loading, setLoading] = useState(false);
+  const { toast } = useToast();
+  const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Generate WhatsApp message
-    const message = `Hi! I'd like my cosmic reading ✨
+    setLoading(true);
 
-Full Name: ${formData.fullName}
-Date of Birth: ${formData.dateOfBirth}
-Time of Birth: ${formData.timeOfBirth}
-Place of Birth: ${formData.placeOfBirth}
-${formData.question ? `Question: ${formData.question}` : ''}
+    try {
+      // Check if user is authenticated
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        // If not authenticated, sign up anonymously or create guest session
+        const { data: authData, error: authError } = await supabase.auth.signUp({
+          email: `${Date.now()}@temp.com`, // temporary email
+          password: 'temppassword123',
+        });
 
-Please provide my personalized reading!`;
+        if (authError) {
+          toast({
+            title: "Error",
+            description: "Failed to create account",
+            variant: "destructive",
+          });
+          return;
+        }
 
-    // WhatsApp business number - replace with actual number
-        const phoneNumber = "+919149175509";
-    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-    
-    window.open(whatsappUrl, '_blank');
-    onClose();
+        // Create profile for the new user
+        const nameParts = formData.fullName.split(' ');
+        const firstName = nameParts[0] || '';
+        const lastName = nameParts.slice(1).join(' ') || '';
+
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .insert({
+            user_id: authData.user?.id,
+            first_name: firstName,
+            last_name: lastName,
+            date_of_birth: formData.dateOfBirth,
+            birth_time: formData.timeOfBirth,
+            birth_place: formData.placeOfBirth,
+          });
+
+        if (profileError) {
+          toast({
+            title: "Error",
+            description: "Failed to save profile",
+            variant: "destructive",
+          });
+          return;
+        }
+      } else {
+        // If authenticated, check if profile exists
+        const { data: existingProfile } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('user_id', session.user.id)
+          .single();
+
+        if (!existingProfile) {
+          // Create profile if it doesn't exist
+          const nameParts = formData.fullName.split(' ');
+          const firstName = nameParts[0] || '';
+          const lastName = nameParts.slice(1).join(' ') || '';
+
+          const { error: profileError } = await supabase
+            .from('profiles')
+            .insert({
+              user_id: session.user.id,
+              first_name: firstName,
+              last_name: lastName,
+              date_of_birth: formData.dateOfBirth,
+              birth_time: formData.timeOfBirth,
+              birth_place: formData.placeOfBirth,
+            });
+
+          if (profileError) {
+            toast({
+              title: "Error",
+              description: "Failed to save profile",
+              variant: "destructive",
+            });
+            return;
+          }
+        }
+      }
+
+      toast({
+        title: "Welcome to MyStarX! ✨",
+        description: "Your cosmic journey begins now.",
+      });
+      
+      onClose();
+      navigate('/ask-the-stars');
+      
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -128,9 +215,9 @@ Please provide my personalized reading!`;
             />
           </div>
 
-          <Button type="submit" variant="cosmic" size="lg" className="w-full">
+          <Button type="submit" variant="cosmic" size="lg" className="w-full" disabled={loading}>
             <Send className="mr-2 w-4 h-4" />
-            Submit
+            {loading ? "Creating your cosmic profile..." : "Submit"}
           </Button>
         </form>
       </DialogContent>
