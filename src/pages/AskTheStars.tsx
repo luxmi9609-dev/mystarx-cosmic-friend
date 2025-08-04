@@ -67,6 +67,7 @@ const AskTheStars = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showAnswer, setShowAnswer] = useState(false);
   const [answeredQuestions, setAnsweredQuestions] = useState<number[]>([]);
+  const [showReportDialog, setShowReportDialog] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -178,7 +179,7 @@ I'm ready for my complete astrological reading and insights!
   return (
     <div className="min-h-screen bg-gray-900 text-white">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-gray-800">
+      <div className="flex items-center justify-center p-4 border-b border-gray-800">
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center font-bold text-lg">
             {(profile?.first_name?.[0] || userData?.fullName?.[0])?.toUpperCase() || 'U'}
@@ -187,15 +188,26 @@ I'm ready for my complete astrological reading and insights!
             <div className="font-semibold">{profile?.first_name || userData?.fullName?.split(' ')[0] || 'User'}</div>
           </div>
         </div>
-        <Button variant="outline" size="sm" className="text-gray-300 border-gray-600">
-          + Add Member
-        </Button>
       </div>
 
       {/* Main Content */}
-      <div className="p-4">
-        <h1 className="text-2xl font-bold text-center mb-2">What do the stars say about you?</h1>
-        <p className="text-gray-400 text-center mb-6">Asking for yourself</p>
+      <div className="p-4 relative overflow-hidden">
+        {/* Animated Background Stars */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-10 left-1/4 w-1 h-1 bg-white rounded-full animate-pulse"></div>
+          <div className="absolute top-20 right-1/3 w-0.5 h-0.5 bg-purple-300 rounded-full animate-pulse" style={{animationDelay: '0.5s'}}></div>
+          <div className="absolute top-32 left-1/6 w-1.5 h-1.5 bg-pink-300 rounded-full animate-pulse" style={{animationDelay: '1s'}}></div>
+          <div className="absolute top-40 right-1/4 w-1 h-1 bg-blue-300 rounded-full animate-pulse" style={{animationDelay: '1.5s'}}></div>
+          <div className="absolute top-60 left-1/3 w-0.5 h-0.5 bg-yellow-300 rounded-full animate-pulse" style={{animationDelay: '2s'}}></div>
+          <div className="absolute top-80 right-1/6 w-1 h-1 bg-indigo-300 rounded-full animate-pulse" style={{animationDelay: '0.3s'}}></div>
+        </div>
+        
+        <div className="relative z-10">
+          <h1 className="text-3xl font-bold text-center mb-2 bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent animate-fade-in">
+            ✨ What do the stars say about you? ✨
+          </h1>
+          <p className="text-gray-400 text-center mb-6 animate-fade-in" style={{animationDelay: '0.2s'}}>Asking for yourself</p>
+        </div>
 
         {/* Questions List */}
         <div className="space-y-3 mb-6">
@@ -243,7 +255,11 @@ I'm ready for my complete astrological reading and insights!
       {/* Bottom Navigation */}
       <div className="fixed bottom-0 left-0 right-0 bg-gray-800 border-t border-gray-700 p-4">
         <div className="flex justify-around">
-          <Button variant="ghost" className="flex flex-col items-center gap-1 text-gray-400">
+          <Button 
+            variant="ghost" 
+            className="flex flex-col items-center gap-1 text-gray-400"
+            onClick={() => navigate('/')}
+          >
             <Home className="w-5 h-5" />
             <span className="text-xs">Home</span>
           </Button>
@@ -251,7 +267,11 @@ I'm ready for my complete astrological reading and insights!
             <MessageCircle className="w-5 h-5" />
             <span className="text-xs">Questions</span>
           </Button>
-          <Button variant="ghost" className="flex flex-col items-center gap-1 text-gray-400">
+          <Button 
+            variant="ghost" 
+            className="flex flex-col items-center gap-1 text-gray-400"
+            onClick={() => setShowReportDialog(true)}
+          >
             <FileText className="w-5 h-5" />
             <span className="text-xs">Reports</span>
           </Button>
@@ -314,6 +334,35 @@ I'm ready for my complete astrological reading and insights!
                 </div>
               </div>
             ) : null}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Report Dialog */}
+      <Dialog open={showReportDialog} onOpenChange={setShowReportDialog}>
+        <DialogContent className="bg-gray-900 border-gray-700 text-white max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-center text-xl">
+              📊 Your MyStarX Report
+            </DialogTitle>
+          </DialogHeader>
+          
+          <div className="py-6">
+            <div className="bg-gradient-to-r from-purple-800/50 to-pink-800/50 rounded-lg p-6 border border-purple-500/30">
+              <div className="text-center space-y-4">
+                <p className="text-yellow-300 font-semibold text-lg">🌟 Want your personal reading?</p>
+                <p className="text-gray-300 text-sm">Get your complete astrological analysis with personalized insights, predictions, and guidance from expert astrologers.</p>
+                <Button 
+                  onClick={() => {
+                    handleUnlockReport();
+                    setShowReportDialog(false);
+                  }}
+                  className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+                >
+                  Unlock MyStarX Report →
+                </Button>
+              </div>
+            </div>
           </div>
         </DialogContent>
       </Dialog>
