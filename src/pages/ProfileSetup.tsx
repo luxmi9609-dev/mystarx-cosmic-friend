@@ -88,7 +88,7 @@ const ProfileSetup = () => {
           title: "Welcome to MyStarX! ✨",
           description: "Your cosmic profile has been created successfully.",
         });
-        navigate("/dashboard");
+        navigate("/ask-the-stars");
       }
     } catch (error) {
       toast({
