@@ -31,84 +31,18 @@ const BirthDetailsForm = ({ isOpen, onClose }: BirthDetailsFormProps) => {
     setLoading(true);
 
     try {
-      // Check if user is authenticated
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (!session) {
-        // If not authenticated, sign up anonymously or create guest session
-        const { data: authData, error: authError } = await supabase.auth.signUp({
-          email: `${Date.now()}@temp.com`, // temporary email
-          password: 'temppassword123',
-        });
+      // Store form data in localStorage for now
+      // We'll create the profile later when user wants the full report
+      const userData = {
+        fullName: formData.fullName,
+        dateOfBirth: formData.dateOfBirth,
+        timeOfBirth: formData.timeOfBirth,
+        placeOfBirth: formData.placeOfBirth,
+        question: formData.question,
+        timestamp: Date.now()
+      };
 
-        if (authError) {
-          toast({
-            title: "Error",
-            description: "Failed to create account",
-            variant: "destructive",
-          });
-          return;
-        }
-
-        // Create profile for the new user
-        const nameParts = formData.fullName.split(' ');
-        const firstName = nameParts[0] || '';
-        const lastName = nameParts.slice(1).join(' ') || '';
-
-        const { error: profileError } = await supabase
-          .from('profiles')
-          .insert({
-            user_id: authData.user?.id,
-            first_name: firstName,
-            last_name: lastName,
-            date_of_birth: formData.dateOfBirth,
-            birth_time: formData.timeOfBirth,
-            birth_place: formData.placeOfBirth,
-          });
-
-        if (profileError) {
-          toast({
-            title: "Error",
-            description: "Failed to save profile",
-            variant: "destructive",
-          });
-          return;
-        }
-      } else {
-        // If authenticated, check if profile exists
-        const { data: existingProfile } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('user_id', session.user.id)
-          .single();
-
-        if (!existingProfile) {
-          // Create profile if it doesn't exist
-          const nameParts = formData.fullName.split(' ');
-          const firstName = nameParts[0] || '';
-          const lastName = nameParts.slice(1).join(' ') || '';
-
-          const { error: profileError } = await supabase
-            .from('profiles')
-            .insert({
-              user_id: session.user.id,
-              first_name: firstName,
-              last_name: lastName,
-              date_of_birth: formData.dateOfBirth,
-              birth_time: formData.timeOfBirth,
-              birth_place: formData.placeOfBirth,
-            });
-
-          if (profileError) {
-            toast({
-              title: "Error",
-              description: "Failed to save profile",
-              variant: "destructive",
-            });
-            return;
-          }
-        }
-      }
+      localStorage.setItem('astro_user_data', JSON.stringify(userData));
 
       toast({
         title: "Welcome to MyStarX! ✨",

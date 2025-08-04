@@ -62,6 +62,7 @@ const questions = [
 const AskTheStars = () => {
   const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState<any>(null);
+  const [userData, setUserData] = useState<any>(null);
   const [selectedQuestion, setSelectedQuestion] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showAnswer, setShowAnswer] = useState(false);
@@ -69,25 +70,35 @@ const AskTheStars = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const getSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        navigate('/auth');
-        return;
+    const checkUserData = async () => {
+      // First check localStorage for user data
+      const storedData = localStorage.getItem('astro_user_data');
+      if (storedData) {
+        setUserData(JSON.parse(storedData));
       }
-      setUser(session.user);
 
-      // Get user profile
-      const { data: profileData } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('user_id', session.user.id)
-        .single();
-      
-      setProfile(profileData);
+      // Also check if user is authenticated
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        setUser(session.user);
+
+        // Get user profile if authenticated
+        const { data: profileData } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('user_id', session.user.id)
+          .single();
+        
+        setProfile(profileData);
+      }
+
+      // If no user data at all, redirect to home
+      if (!storedData && !session) {
+        navigate('/');
+      }
     };
 
-    getSession();
+    checkUserData();
   }, [navigate]);
 
   const handleQuestionClick = (question: any) => {
@@ -104,17 +115,39 @@ const AskTheStars = () => {
   };
 
   const handleUnlockReport = () => {
-    if (!profile) return;
+    // Use profile data if available, otherwise use localStorage data
+    const currentUserData = profile || userData;
+    
+    if (!currentUserData) return;
 
-    const message = `🌟 Hello MyStarX Team!
+    let message = `🌟 Hello MyStarX Team!
 
 I would like to unlock my personalized MyStarX Report.
 
-📝 My Details:
+📝 My Details:`;
+
+    if (profile) {
+      // If user has a profile in database
+      message += `
 Name: ${profile.first_name} ${profile.last_name}
 Date of Birth: ${profile.date_of_birth}
 Birth Time: ${profile.birth_time}
-Birth Place: ${profile.birth_place}
+Birth Place: ${profile.birth_place}`;
+    } else if (userData) {
+      // If user data is from localStorage
+      message += `
+Name: ${userData.fullName}
+Date of Birth: ${userData.dateOfBirth}
+Birth Time: ${userData.timeOfBirth}
+Birth Place: ${userData.placeOfBirth}`;
+      
+      if (userData.question) {
+        message += `
+Question: ${userData.question}`;
+      }
+    }
+
+    message += `
 
 I'm ready for my complete astrological reading and insights!
 
@@ -138,7 +171,9 @@ I'm ready for my complete astrological reading and insights!
     setTimeout(() => handleQuestionClick(nextQ), 300);
   };
 
-  if (!user) return null;
+  const currentUserData = profile || userData;
+  
+  if (!currentUserData) return null;
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
@@ -146,10 +181,10 @@ I'm ready for my complete astrological reading and insights!
       <div className="flex items-center justify-between p-4 border-b border-gray-800">
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center font-bold text-lg">
-            {profile?.first_name?.[0]?.toUpperCase() || 'U'}
+            {(profile?.first_name?.[0] || userData?.fullName?.[0])?.toUpperCase() || 'U'}
           </div>
           <div>
-            <div className="font-semibold">{profile?.first_name || 'User'}</div>
+            <div className="font-semibold">{profile?.first_name || userData?.fullName?.split(' ')[0] || 'User'}</div>
           </div>
         </div>
         <Button variant="outline" size="sm" className="text-gray-300 border-gray-600">
