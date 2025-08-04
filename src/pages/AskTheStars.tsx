@@ -236,19 +236,13 @@ I'm ready for my complete astrological reading and insights!
         </div>
 
         {/* Questions Status */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-center mb-6">
           <div className="flex items-center gap-2 text-gray-400">
             <div className="w-6 h-6 bg-gray-700 rounded-full flex items-center justify-center">
               <span className="text-xs">{10 - answeredQuestions.length}</span>
             </div>
             <span>{10 - answeredQuestions.length} Questions left</span>
           </div>
-          <Button 
-            className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
-            onClick={handleUnlockReport}
-          >
-            Buy More Questions
-          </Button>
         </div>
       </div>
 
@@ -334,6 +328,34 @@ I'm ready for my complete astrological reading and insights!
                 </div>
               </div>
             ) : null}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Report Dialog */}
+      <Dialog open={showReportDialog} onOpenChange={setShowReportDialog}>
+        <DialogContent className="bg-gray-900 border-gray-700 text-white max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-center text-xl">
+              🌟 Personal Reading
+            </DialogTitle>
+          </DialogHeader>
+          
+          <div className="py-6">
+            <div className="bg-gradient-to-r from-purple-800/50 to-pink-800/50 rounded-lg p-6 border border-purple-500/30">
+              <div className="text-center space-y-4">
+                <p className="text-yellow-300 font-semibold text-lg">🌟 Want your personal reading?</p>
+                <Button 
+                  onClick={() => {
+                    handleUnlockReport();
+                    setShowReportDialog(false);
+                  }}
+                  className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-lg py-3"
+                >
+                  Unlock MyStarX Report →
+                </Button>
+              </div>
+            </div>
           </div>
         </DialogContent>
       </Dialog>
