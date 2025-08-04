@@ -236,13 +236,19 @@ I'm ready for my complete astrological reading and insights!
         </div>
 
         {/* Questions Status */}
-        <div className="flex items-center justify-center mb-6">
+        <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-2 text-gray-400">
             <div className="w-6 h-6 bg-gray-700 rounded-full flex items-center justify-center">
               <span className="text-xs">{10 - answeredQuestions.length}</span>
             </div>
             <span>{10 - answeredQuestions.length} Questions left</span>
           </div>
+          <Button 
+            className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+            onClick={handleUnlockReport}
+          >
+            Buy More Questions
+          </Button>
         </div>
       </div>
 
