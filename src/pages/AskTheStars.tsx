@@ -337,35 +337,6 @@ I'm ready for my complete astrological reading and insights!
           </div>
         </DialogContent>
       </Dialog>
-
-      {/* Report Dialog */}
-      <Dialog open={showReportDialog} onOpenChange={setShowReportDialog}>
-        <DialogContent className="bg-gray-900 border-gray-700 text-white max-w-md">
-          <DialogHeader>
-            <DialogTitle className="text-center text-xl">
-              📊 Your MyStarX Report
-            </DialogTitle>
-          </DialogHeader>
-          
-          <div className="py-6">
-            <div className="bg-gradient-to-r from-purple-800/50 to-pink-800/50 rounded-lg p-6 border border-purple-500/30">
-              <div className="text-center space-y-4">
-                <p className="text-yellow-300 font-semibold text-lg">🌟 Want your personal reading?</p>
-                <p className="text-gray-300 text-sm">Get your complete astrological analysis with personalized insights, predictions, and guidance from expert astrologers.</p>
-                <Button 
-                  onClick={() => {
-                    handleUnlockReport();
-                    setShowReportDialog(false);
-                  }}
-                  className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
-                >
-                  Unlock MyStarX Report →
-                </Button>
-              </div>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };
